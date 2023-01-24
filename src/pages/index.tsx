@@ -100,16 +100,16 @@ export default function Home() {
           )}
           {result && result.length > 0 && (
             <section>
-              <div className="flex justify-between mb-1">
+              <div className="flex justify-between items-center mb-1">
                 <p>Results:</p>
                 {url && (
                   <a
                     href={url}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium hover:underline underline-offset-4"
+                    className="font-medium px-2 py-1 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200  focus:outline-none focus:ring focus:ring-blue-300/40 focus:border focus:border-blue-500 focus:bg-gray-50"
                   >
-                    go to link
+                    open
                   </a>
                 )}
               </div>
