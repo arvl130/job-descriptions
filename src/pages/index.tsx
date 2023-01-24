@@ -25,7 +25,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
 
   return (
-    <main className="max-w-lg mx-auto text-gray-700 py-12 min-h-screen">
+    <main className="max-w-lg mx-auto text-gray-700 py-12 px-6 min-h-screen">
       <header className="pt-24 pb-6">
         <h1 className="text-4xl font-bold text-center">
           Job Description Search API
@@ -59,7 +59,7 @@ export default function Home() {
           <input
             type="text"
             placeholder=" Type a job title ..."
-            className="px-4 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300/40 focus:border-blue-500"
+            className="w-full px-4 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300/40 focus:border-blue-500"
             {...register("term")}
           />
           <button
