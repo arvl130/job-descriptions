@@ -59,12 +59,12 @@ export default function Home() {
           <input
             type="text"
             placeholder=" Type a job title ..."
-            className="w-full px-4 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300/40 focus:border-blue-500"
+            className="w-full px-4 py-2 rounded-l-md border border-gray-300 transition duration-200 focus:outline-none focus:ring focus:ring-blue-300/40 focus:border-blue-500"
             {...register("term")}
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white font-medium px-4 py-2 rounded-r-md focus:outline-none focus:ring focus:ring-blue-300/40 focus:border focus:border-blue-800"
+            className="bg-blue-500 hover:bg-blue-400 transition duration-200 text-white font-medium px-4 py-2 rounded-r-md focus:outline-none focus:ring focus:ring-blue-300/40"
           >
             Search
           </button>
