@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { runCorsMiddleware } from "@/server/cors"
 import { db } from "@/server/db"
 import { z, ZodError } from "zod"
 
@@ -28,6 +29,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<SearchResult>
 ) {
+  await runCorsMiddleware(req, res)
+
   if (req.method !== "GET") {
     res.status(405).json({
       message: "Only GET requests are supported",
