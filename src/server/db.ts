@@ -83,12 +83,16 @@ function getDbEngine() {
 function createDb() {
   return new Kysely<Database>({
     dialect: createDialect(getDbEngine()),
-    log(event) {
-      if (event.level === "query") {
-        console.log(event.query.sql)
-        console.log(event.query.parameters)
-      }
-    },
+    log:
+      process.env.NODE_ENV !== "production"
+        ? function (event) {
+            if (event.level === "query") {
+              console.log("SQL query executed.")
+              console.log(`Query: ${event.query.sql}`)
+              console.log(`Parameters: ${event.query.parameters}`)
+            }
+          }
+        : undefined,
   })
 }
 
