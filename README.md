@@ -9,7 +9,7 @@ Stop thinking about job descriptions and get them here.
 This project uses the dataset provided by the O\*NET Resource Center for searching job descriptions.
 
 You may obtain a copy of their dataset from [here](https://www.onetcenter.org/database.html). Import
-it to your MySQL or PostgreSQL database.
+it to your PostgreSQL database.
 
 Clone this repository:
 
@@ -21,7 +21,7 @@ $ cd job-descriptions
 Pull down the project dependencies:
 
 ```sh
-$ yarn run install # or npm install
+$ pnpm install
 ```
 
 Create a `.env` file using the `.env.template`. Fill in the file with the appropriate credentials.
@@ -34,13 +34,13 @@ $ vi .env # press :wq to quit!
 Run the project:
 
 ```sh
-$ yarn run dev # or npm run dev
+$ pnpm dev
 ```
 
 Build for production:
 
 ```sh
-$ yarn run build # or npm run build
+$ pnpm build
 ```
 
 # License
