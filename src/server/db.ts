@@ -1,16 +1,5 @@
-import { Kysely, MysqlDialect, PostgresDialect } from "kysely"
+import { Kysely, PostgresDialect } from "kysely"
 import { Pool } from "pg"
-import { createPool } from "mysql2"
-
-const {
-  DB_ENGINE,
-  DB_POSTGRES_CONNECTION_STRING,
-  DB_MYSQL_HOST,
-  DB_MYSQL_USER,
-  DB_MYSQL_PASSWORD,
-  DB_MYSQL_DATABASE,
-  DB_MYSQL_PORT,
-} = process.env
 
 interface OccupationDataTable {
   onetsoc_code: string
@@ -30,70 +19,36 @@ interface Database {
   alternate_titles: AlternateTitlesTable
 }
 
-function createPostgresDialect(): PostgresDialect {
-  if (!DB_POSTGRES_CONNECTION_STRING)
-    throw new Error("Missing or invalid database credentials")
-
-  return new PostgresDialect({
+const { POSTGRES_CONNECTION_STRING } = process.env
+const db = new Kysely<Database>({
+  dialect: new PostgresDialect({
     pool: new Pool({
-      connectionString: DB_POSTGRES_CONNECTION_STRING,
+      connectionString: POSTGRES_CONNECTION_STRING,
     }),
-  })
-}
-
-function createMySqlDialect(): MysqlDialect {
-  if (
-    !(DB_MYSQL_HOST && DB_MYSQL_USER && DB_MYSQL_PASSWORD && DB_MYSQL_DATABASE)
-  )
-    throw new Error("Missing or invalid database credentials")
-
-  return new MysqlDialect({
-    pool: createPool({
-      host: DB_MYSQL_HOST,
-      user: DB_MYSQL_USER,
-      password: DB_MYSQL_PASSWORD,
-      database: DB_MYSQL_DATABASE,
-      port: typeof DB_MYSQL_PORT === "string" ? parseInt(DB_MYSQL_PORT) : 3306,
-    }),
-  })
-}
-
-function createDialect(dbEngine: "mysql" | "postgres") {
-  switch (dbEngine) {
-    case "mysql":
-      return createMySqlDialect()
-    case "postgres":
-      return createPostgresDialect()
-  }
-}
-
-function getDbEngine() {
-  switch (DB_ENGINE) {
-    case "mysql":
-      return DB_ENGINE
-    case "postgres":
-      return DB_ENGINE
-    default:
-      throw new Error(
-        "Invalid database engine: only 'mysql' or 'postgres' is supported."
-      )
-  }
-}
-
-function createDb() {
-  return new Kysely<Database>({
-    dialect: createDialect(getDbEngine()),
-    log:
-      process.env.NODE_ENV !== "production"
-        ? function (event) {
-            if (event.level === "query") {
-              console.log("SQL query executed.")
-              console.log(`Query: ${event.query.sql}`)
-              console.log(`Parameters: ${event.query.parameters}`)
-            }
+  }),
+  log:
+    process.env.NODE_ENV !== "production"
+      ? function (event) {
+          if (event.level === "query") {
+            console.log("SQL query executed.")
+            console.log(`Query: ${event.query.sql}`)
+            console.log(`Parameters: ${event.query.parameters}`)
           }
-        : undefined,
-  })
-}
+        }
+      : undefined,
+})
 
-export const db = createDb()
+export function getJobs({ limit, term }: { limit: number; term: string }) {
+  return db
+    .selectFrom("occupation_data")
+    .innerJoin(
+      "alternate_titles",
+      "occupation_data.onetsoc_code",
+      "alternate_titles.onetsoc_code"
+    )
+    .select(["title", "alternate_title", "description", "short_title"])
+    .where("alternate_title", "ilike", `%${term}%`)
+    .orWhere("short_title", "ilike", `%${term}%`)
+    .limit(limit)
+    .execute()
+}

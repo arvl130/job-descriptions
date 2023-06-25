@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { runCorsMiddleware } from "@/server/cors"
-import { db } from "@/server/db"
 import { z, ZodError } from "zod"
-
-const { DB_ENGINE } = process.env
+import { getJobs } from "@/server/db"
 
 export type SearchResult = {
   message: string
@@ -38,9 +36,6 @@ export default async function handler(
     return
   }
 
-  if (DB_ENGINE !== "mysql" && DB_ENGINE !== "postgres")
-    throw new Error("Missing or invalid credentials")
-
   try {
     const { term, limit } = req.query
     const input = InputSchema.parse({
@@ -48,20 +43,10 @@ export default async function handler(
       limit: typeof limit === "string" ? parseInt(limit) : undefined,
     })
 
-    const comparisonOperation = DB_ENGINE === "postgres" ? "ilike" : "like"
-
-    const jobs = await db
-      .selectFrom("occupation_data")
-      .innerJoin(
-        "alternate_titles",
-        "occupation_data.onetsoc_code",
-        "alternate_titles.onetsoc_code"
-      )
-      .select(["title", "alternate_title", "description", "short_title"])
-      .where("alternate_title", comparisonOperation, `%${input.term}%`)
-      .orWhere("short_title", comparisonOperation, `%${input.term}%`)
-      .limit(input.limit)
-      .execute()
+    const jobs = await getJobs({
+      term: input.term,
+      limit: input.limit,
+    })
 
     res.json({
       message: `Retrieved a list of jobs related to: ${input.term}`,
