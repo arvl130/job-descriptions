@@ -1,5 +1,6 @@
 import { Kysely, PostgresDialect } from "kysely"
 import { Pool } from "pg"
+import { serverEnv } from "./env"
 
 interface OccupationDataTable {
   onetsoc_code: string
@@ -19,7 +20,7 @@ interface Database {
   alternate_titles: AlternateTitlesTable
 }
 
-const { POSTGRES_CONNECTION_STRING } = process.env
+const { POSTGRES_CONNECTION_STRING } = serverEnv
 export const postgresqlDb = new Kysely<Database>({
   dialect: new PostgresDialect({
     pool: new Pool({
