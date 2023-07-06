@@ -15,7 +15,12 @@ export default function Document() {
           rel="stylesheet"
         />
       </Head>
-      <body>
+      <body
+        style={{
+          fontFamily:
+            "Inter, -apple-system, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif",
+        }}
+      >
         <Main />
         <NextScript />
       </body>
