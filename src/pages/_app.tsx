@@ -15,13 +15,19 @@ function Navbar() {
         <div>
           <button
             type="button"
-            className={`transition duration-200 text-white font-medium w-20 py-2 rounded-md ${
-              status === "loading" ? "bg-purple-300" : ""
+            className={`transition duration-200 font-medium w-20 py-2 rounded-md ${
+              status === "loading" ? "bg-purple-300 text-white" : ""
             } ${
-              status === "authenticated" || status === "unauthenticated"
-                ? "bg-purple-600 hover:bg-purple-500"
+              status === "unauthenticated"
+                ? "bg-purple-600 hover:bg-purple-500 text-white"
                 : ""
-            }`}
+            }
+            ${
+              status === "authenticated"
+                ? "border border-purple-600 text-purple-700 hover:bg-purple-600 hover:text-white"
+                : ""
+            }
+            `}
             onClick={() => {
               if (status === "authenticated") signOut()
               if (status === "unauthenticated") signIn()
@@ -29,7 +35,7 @@ function Navbar() {
           >
             {status === "loading" && <br />}
             {status === "authenticated" && <>Logout</>}
-            {status === "unauthenticated" && <>Login</>}
+            {status === "unauthenticated" && <>Sign in</>}
           </button>
         </div>
       </div>
