@@ -53,11 +53,13 @@ export default function App({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>
-        <Navbar />
-        <Component {...pageProps} />
-        <footer className="bg-gray-800 text-white text-center font-medium px-4 py-3">
-          Angelo Geulin &copy; 2023
-        </footer>
+        <div className="min-h-screen grid grid-rows-[auto_1fr_auto]">
+          <Navbar />
+          <Component {...pageProps} />
+          <footer className="bg-gray-800 text-white text-center font-medium px-4 py-3">
+            Angelo Geulin &copy; 2023
+          </footer>
+        </div>
       </SessionProvider>
     </>
   )
