@@ -1,10 +1,9 @@
-import { AuthOptions } from "next-auth"
+import { NextAuthOptions } from "next-auth"
 import type { Adapter } from "next-auth/adapters"
-import GoogleProvider from "next-auth/providers/google"
 import { DynamoDBAdapter } from "@auth/dynamodb-adapter"
+import GoogleProvider from "next-auth/providers/google"
 import { dynamodbDocument } from "@/server/dynamodb"
 import { serverEnv } from "@/server/env"
-import { webcrypto } from "crypto"
 
 const {
   GOOGLE_CLIENT_ID,
@@ -13,9 +12,7 @@ const {
   DYNAMODB_TABLE_NAME,
 } = serverEnv
 
-globalThis.crypto ??= webcrypto as Crypto
-
-export const nextAuthOptions: AuthOptions = {
+export const nextAuthOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: GOOGLE_CLIENT_ID,
@@ -41,8 +38,4 @@ export const nextAuthOptions: AuthOptions = {
       return session
     },
   },
-}
-
-export const config = {
-  runtime: "experimental-edge",
 }
