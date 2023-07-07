@@ -1,6 +1,7 @@
 import { AuthOptions } from "next-auth"
+import type { Adapter } from "next-auth/adapters"
 import GoogleProvider from "next-auth/providers/google"
-import { DynamoDBAdapter } from "@next-auth/dynamodb-adapter"
+import { DynamoDBAdapter } from "@auth/dynamodb-adapter"
 import { dynamodbDocument } from "@/server/dynamodb"
 import { serverEnv } from "@/server/env"
 
@@ -25,7 +26,10 @@ export const nextAuthOptions: AuthOptions = {
     indexName: "GSI1",
     indexPartitionKey: "GSI1PK",
     indexSortKey: "GSI1SK",
-  }),
+    // Adapter type is still broken, so we have
+    // to assert the type here for now.
+    // Issue: https://github.com/nextauthjs/next-auth/issues/6106
+  }) as Adapter,
   secret: NEXT_AUTH_SECRET,
   callbacks: {
     session({ session, user }) {
