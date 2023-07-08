@@ -8,6 +8,7 @@ import { TrashIcon } from "@/components/hero-icons"
 const ApiResultSchema = z
   .object({
     keyId: z.string().length(20),
+    createdAt: z.string().min(1),
     displayName: z.string().max(50),
   })
   .array()
@@ -30,6 +31,15 @@ export default function Dashboard() {
 
     const { results } = await response.json()
     const validApiKeys = ApiResultSchema.parse(results)
+    validApiKeys.sort((first, second) => {
+      const firstDate = new Date(first.createdAt).getTime()
+      const secondDate = new Date(second.createdAt).getTime()
+
+      if (firstDate === secondDate) return 0
+      if (firstDate < secondDate) return 1
+
+      return -1
+    })
 
     return validApiKeys
   }

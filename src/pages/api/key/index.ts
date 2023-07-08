@@ -19,6 +19,7 @@ export default async function handler(
         message: string
         results: {
           keyId: string
+          createdAt: string
           displayName: string
         }[]
       }
@@ -52,6 +53,7 @@ export default async function handler(
       message: "Access keys retrieved",
       results: apiKeys.map((apiKey) => ({
         keyId: apiKey.keyId,
+        createdAt: apiKey.createdAt,
         displayName: apiKey.displayName,
       })),
     })

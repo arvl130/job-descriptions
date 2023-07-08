@@ -34,6 +34,7 @@ export async function createApiKey({
   const keyHash = scryptSync(keySecret, keySalt, 64)
     .toString("hex")
     .toUpperCase()
+  const createdAt = new Date().toISOString()
 
   await dynamodbDocument.put({
     TableName: DYNAMODB_TABLE_NAME,
@@ -44,6 +45,7 @@ export async function createApiKey({
       keySalt,
       keyHash,
       displayName,
+      createdAt,
     },
   })
 
@@ -60,6 +62,7 @@ const ApiKeyItemSchema = z.object({
   keySalt: z.string().length(32),
   keyHash: z.string().length(128),
   displayName: z.string().min(1).max(50),
+  createdAt: z.string().min(1),
 })
 
 export async function isValidApiKey({
