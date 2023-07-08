@@ -54,8 +54,8 @@ export async function createApiKey({
 }
 
 const ApiKeyItemSchema = z.object({
-  PK: z.string().startsWith("USER#"),
-  SK: z.string().startsWith("APIKEY#"),
+  pk: z.string().startsWith("USER#"),
+  sk: z.string().startsWith("APIKEY#"),
   keyId: z.string().length(20),
   keySalt: z.string().length(32),
   keyHash: z.string().length(128),
