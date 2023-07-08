@@ -8,7 +8,7 @@ import { serverEnv } from "@/server/env"
 const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
-  NEXT_AUTH_SECRET,
+  NEXTAUTH_SECRET,
   DYNAMODB_TABLE_NAME,
   DYNAMODB_INDEX_NAME,
   DYNAMODB_INDEX_PK,
@@ -36,7 +36,7 @@ export const nextAuthOptions: NextAuthOptions = {
     // to assert the type here for now.
     // Issue: https://github.com/nextauthjs/next-auth/issues/6106
   }) as Adapter,
-  secret: NEXT_AUTH_SECRET,
+  secret: NEXTAUTH_SECRET,
   callbacks: {
     session({ session, user }) {
       if (session.user) session.user.id = user.id
