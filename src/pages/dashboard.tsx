@@ -104,16 +104,27 @@ export default function Dashboard() {
                   {apiKeys.map((apiKey) => (
                     <article
                       key={apiKey.keyId}
-                      className="px-4 py-2 border-b border-zinc-300 flex items-center justify-between"
+                      className="px-4 py-2 border-b border-zinc-300 flex justify-between"
                     >
-                      <p>{apiKey.displayName}</p>
-                      <button
-                        type="button"
-                        className="hover:bg-zinc-100 px-2 py-2 rounded-md transition duration-200"
-                        onClick={() => deleteApiKey(apiKey.keyId)}
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
+                      <div>
+                        <p className="font-medium">{apiKey.displayName}</p>
+                        <p className="text-zinc-500 text-xs">
+                          Access Key ID: {apiKey.keyId}
+                        </p>
+                        <p className="text-zinc-500 text-xs">
+                          Created date:{" "}
+                          {new Date(apiKey.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                      <div>
+                        <button
+                          type="button"
+                          className="hover:bg-zinc-100 px-2 py-2 rounded-md transition duration-200"
+                          onClick={() => deleteApiKey(apiKey.keyId)}
+                        >
+                          <TrashIcon className="w-5 h-5" />
+                        </button>
+                      </div>
                     </article>
                   ))}
                   {apiKeys.length < 5 && (
