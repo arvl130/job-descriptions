@@ -37,7 +37,7 @@ export function GenerateKeyForm({
   return (
     <form
       onSubmit={handleSubmit(async (formData) => {
-        const response = await fetch("/api/generate-key", {
+        const response = await fetch("/api/key/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
