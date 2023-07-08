@@ -120,11 +120,14 @@ export async function deleteApiKey({
   userId: string
   keyId: string
 }) {
-  await dynamodbDocument.delete({
+  const { Attributes } = await dynamodbDocument.delete({
     TableName: DYNAMODB_TABLE_NAME,
     Key: {
       pk: `USER#${userId}`,
       sk: `APIKEY#${keyId}`,
     },
+    ReturnValues: "ALL_OLD",
   })
+
+  return ApiKeyItemSchema.parse(Attributes)
 }

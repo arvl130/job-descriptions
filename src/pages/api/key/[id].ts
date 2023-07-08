@@ -20,6 +20,8 @@ export default async function handler(
         message: string
         result: {
           keyId: string
+          createdAt: string
+          displayName: string
         }
       }
   >
@@ -47,7 +49,7 @@ export default async function handler(
       keyId: req.query.id,
     })
 
-    await deleteApiKey({
+    const { displayName, createdAt } = await deleteApiKey({
       userId,
       keyId,
     })
@@ -56,6 +58,8 @@ export default async function handler(
       message: "Access key deleted",
       result: {
         keyId,
+        createdAt,
+        displayName,
       },
     })
   } catch (e) {
