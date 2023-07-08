@@ -2,7 +2,7 @@ import { GenerateKeyForm } from "@/components/generate-key-form"
 import { GeneratedKeySection } from "@/components/generated-key-section"
 import { useRef, useState } from "react"
 import { z } from "zod"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { TrashIcon } from "@/components/hero-icons"
 
 const ApiResultSchema = z
@@ -12,6 +12,12 @@ const ApiResultSchema = z
     displayName: z.string().max(50),
   })
   .array()
+
+const ApiMutationResultSchema = z.object({
+  keyId: z.string().length(20),
+  createdAt: z.string().min(1),
+  displayName: z.string().max(50),
+})
 
 const MAX_APIKEY_COUNT = 5
 
@@ -50,19 +56,33 @@ export default function Dashboard() {
     data: apiKeys,
     isLoading,
     isError,
-    refetch: refetchApiKeys,
   } = useQuery({
     queryKey: ["apiKeys"],
     queryFn: fetchApiKeys,
   })
 
+  const queryClient = useQueryClient()
+
   const { mutate: deleteApiKey } = useMutation({
-    mutationFn: (keyId: string) => {
-      return fetch(`/api/key/${keyId}`, {
+    mutationFn: async (keyId: string) => {
+      const response = await fetch(`/api/key/${keyId}`, {
         method: "DELETE",
       })
+
+      if (!response.ok) throw new Error("Fetch error")
+      const { result } = await response.json()
+
+      return ApiMutationResultSchema.parse(result)
     },
-    onSuccess: () => refetchApiKeys(),
+    onSuccess: (deletedKey) => {
+      queryClient.setQueryData(["apiKeys"], (oldData) => {
+        if (Array.isArray(oldData)) {
+          return oldData.filter((data) => data.keyId !== deletedKey.keyId)
+        }
+
+        return oldData
+      })
+    },
   })
 
   return (
