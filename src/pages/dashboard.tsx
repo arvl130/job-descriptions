@@ -2,7 +2,7 @@ import { GenerateKeyForm } from "@/components/generate-key-form"
 import { GeneratedKeySection } from "@/components/generated-key-section"
 import { useRef, useState } from "react"
 import { z } from "zod"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation } from "@tanstack/react-query"
 import { TrashIcon } from "@/components/hero-icons"
 
 const ApiResultSchema = z
@@ -38,9 +38,19 @@ export default function Dashboard() {
     data: apiKeys,
     isLoading,
     isError,
+    refetch: refetchApiKeys,
   } = useQuery({
     queryKey: ["apiKeys"],
     queryFn: fetchApiKeys,
+  })
+
+  const { mutate: deleteApiKey } = useMutation({
+    mutationFn: (keyId: string) => {
+      return fetch(`/api/key/${keyId}`, {
+        method: "DELETE",
+      })
+    },
+    onSuccess: () => refetchApiKeys(),
   })
 
   return (
@@ -90,6 +100,7 @@ export default function Dashboard() {
                       <button
                         type="button"
                         className="hover:bg-zinc-100 px-2 py-2 rounded-md transition duration-200"
+                        onClick={() => deleteApiKey(apiKey.keyId)}
                       >
                         <TrashIcon className="w-5 h-5" />
                       </button>

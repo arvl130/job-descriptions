@@ -109,3 +109,19 @@ export async function getApiKeys(userId: string) {
 
   return ValidatedItems
 }
+
+export async function deleteApiKey({
+  userId,
+  keyId,
+}: {
+  userId: string
+  keyId: string
+}) {
+  await dynamodbDocument.delete({
+    TableName: DYNAMODB_TABLE_NAME,
+    Key: {
+      pk: `USER#${userId}`,
+      sk: `APIKEY#${keyId}`,
+    },
+  })
+}
