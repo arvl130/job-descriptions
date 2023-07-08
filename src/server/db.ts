@@ -88,3 +88,24 @@ export async function isValidApiKey({
 
   return isValid
 }
+
+export async function getApiKeys(userId: string) {
+  const { Items } = await dynamodbDocument.query({
+    TableName: DYNAMODB_TABLE_NAME,
+    KeyConditions: {
+      pk: {
+        ComparisonOperator: "EQ",
+        AttributeValueList: [`USER#${userId}`],
+      },
+      sk: {
+        ComparisonOperator: "BEGINS_WITH",
+        AttributeValueList: ["APIKEY#"],
+      },
+    },
+  })
+
+  if (!Items) return []
+  const ValidatedItems = ApiKeyItemSchema.array().parse(Items)
+
+  return ValidatedItems
+}

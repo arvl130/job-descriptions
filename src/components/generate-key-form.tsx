@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient } from "@tanstack/react-query"
 
 const FormSchema = z.object({
   displayName: z.string().min(1).max(50),
@@ -33,6 +34,7 @@ export function GenerateKeyForm({
     resolver: zodResolver(FormSchema),
     mode: "onSubmit",
   })
+  const queryClient = useQueryClient()
 
   return (
     <form
@@ -54,6 +56,7 @@ export function GenerateKeyForm({
 
         const { result } = await response.json()
         const { keyId, keySecret, displayName } = ApiResultSchema.parse(result)
+        queryClient.invalidateQueries(["apiKeys"])
 
         setGeneratedKey({
           id: keyId,

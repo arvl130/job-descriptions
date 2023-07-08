@@ -2,6 +2,7 @@ import "@/styles/globals.css"
 import Head from "next/head"
 import type { AppProps } from "next/app"
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 function Navbar() {
   const { status } = useSession()
@@ -47,6 +48,8 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  const queryClient = new QueryClient()
+
   return (
     <>
       <Head>
@@ -58,15 +61,17 @@ export default function App({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <SessionProvider session={session}>
-        <div className="min-h-screen grid grid-rows-[auto_1fr_auto]">
-          <Navbar />
-          <Component {...pageProps} />
-          <footer className="bg-zinc-800 text-white text-center font-medium px-4 py-3">
-            Angelo Geulin &copy; 2023
-          </footer>
-        </div>
-      </SessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider session={session}>
+          <div className="min-h-screen grid grid-rows-[auto_1fr_auto]">
+            <Navbar />
+            <Component {...pageProps} />
+            <footer className="bg-zinc-800 text-white text-center font-medium px-4 py-3">
+              Angelo Geulin &copy; 2023
+            </footer>
+          </div>
+        </SessionProvider>
+      </QueryClientProvider>
     </>
   )
 }
