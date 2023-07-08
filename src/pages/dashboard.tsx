@@ -13,6 +13,8 @@ const ApiResultSchema = z
   })
   .array()
 
+const MAX_APIKEY_COUNT = 5
+
 export default function Dashboard() {
   const dialogRef = useRef<HTMLDialogElement | null>(null)
   const [generatedKey, setGeneratedKey] = useState({
@@ -101,10 +103,14 @@ export default function Dashboard() {
                 </section>
               ) : (
                 <section className="min-h-[20rem] border-x border-b border-zinc-300">
-                  {apiKeys.map((apiKey) => (
+                  {apiKeys.map((apiKey, index) => (
                     <article
                       key={apiKey.keyId}
-                      className="px-4 py-2 border-b border-zinc-300 flex justify-between"
+                      className={`px-4 py-2 flex justify-between ${
+                        index === MAX_APIKEY_COUNT - 1
+                          ? ""
+                          : "border-b border-zinc-300"
+                      }`}
                     >
                       <div>
                         <p className="font-medium">{apiKey.displayName}</p>
@@ -127,7 +133,7 @@ export default function Dashboard() {
                       </div>
                     </article>
                   ))}
-                  {apiKeys.length < 5 && (
+                  {apiKeys.length < MAX_APIKEY_COUNT && (
                     <article className="flex justify-center px-4 py-4">
                       <button
                         type="button"
