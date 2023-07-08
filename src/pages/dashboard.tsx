@@ -5,7 +5,7 @@ import { z } from "zod"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { TrashIcon } from "@/components/hero-icons"
 
-const ApiResultSchema = z
+const ApiGetResultSchema = z
   .object({
     keyId: z.string().length(20),
     createdAt: z.string().min(1),
@@ -13,7 +13,7 @@ const ApiResultSchema = z
   })
   .array()
 
-type ApiResultType = z.infer<typeof ApiMutationResultSchema>
+type ApiGetResultType = z.infer<typeof ApiGetResultSchema>
 
 const ApiMutationResultSchema = z.object({
   keyId: z.string().length(20),
@@ -40,7 +40,7 @@ export default function Dashboard() {
     }
 
     const { results } = await response.json()
-    const validApiKeys = ApiResultSchema.parse(results)
+    const validApiKeys = ApiGetResultSchema.parse(results)
     validApiKeys.sort((first, second) => {
       const firstDate = new Date(first.createdAt).getTime()
       const secondDate = new Date(second.createdAt).getTime()
@@ -77,7 +77,7 @@ export default function Dashboard() {
       return ApiMutationResultSchema.parse(result)
     },
     onSuccess: (deletedKey) => {
-      queryClient.setQueryData<ApiResultType[]>(["apiKeys"], (oldData) =>
+      queryClient.setQueryData<ApiGetResultType>(["apiKeys"], (oldData) =>
         oldData
           ? oldData.filter((data) => data.keyId !== deletedKey.keyId)
           : oldData
