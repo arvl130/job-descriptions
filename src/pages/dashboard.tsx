@@ -13,6 +13,8 @@ const ApiResultSchema = z
   })
   .array()
 
+type ApiResultType = z.infer<typeof ApiMutationResultSchema>
+
 const ApiMutationResultSchema = z.object({
   keyId: z.string().length(20),
   createdAt: z.string().min(1),
@@ -75,13 +77,11 @@ export default function Dashboard() {
       return ApiMutationResultSchema.parse(result)
     },
     onSuccess: (deletedKey) => {
-      queryClient.setQueryData(["apiKeys"], (oldData) => {
-        if (Array.isArray(oldData)) {
-          return oldData.filter((data) => data.keyId !== deletedKey.keyId)
-        }
-
-        return oldData
-      })
+      queryClient.setQueryData<ApiResultType[]>(["apiKeys"], (oldData) =>
+        oldData
+          ? oldData.filter((data) => data.keyId !== deletedKey.keyId)
+          : oldData
+      )
     },
   })
 
