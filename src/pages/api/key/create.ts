@@ -22,6 +22,7 @@ export default async function handler(
           keyId: string
           keySecret: string
           displayName: string
+          createdAt: string
         }
       }
   >
@@ -49,7 +50,7 @@ export default async function handler(
       displayName: req.body.displayName,
     })
 
-    const { keyId, keySecret } = await createApiKey({
+    const { keyId, keySecret, createdAt } = await createApiKey({
       userId,
       displayName,
     })
@@ -59,6 +60,7 @@ export default async function handler(
       result: {
         keyId,
         keySecret,
+        createdAt,
         displayName,
       },
     })

@@ -13,7 +13,10 @@ const ApiResultSchema = z.object({
   keyId: z.string().length(20),
   keySecret: z.string().length(32),
   displayName: z.string().max(50),
+  createdAt: z.string().min(1),
 })
+
+type ApiResultType = z.infer<typeof ApiResultSchema>
 
 export function GenerateKeyForm({
   setGeneratedKey,
@@ -55,8 +58,14 @@ export function GenerateKeyForm({
         }
 
         const { result } = await response.json()
-        const { keyId, keySecret, displayName } = ApiResultSchema.parse(result)
-        queryClient.invalidateQueries(["apiKeys"])
+        const { keyId, keySecret, displayName, createdAt } =
+          ApiResultSchema.parse(result)
+
+        queryClient.setQueryData<Omit<ApiResultType, "keySecret">[]>(
+          ["apiKeys"],
+          (oldData) =>
+            oldData ? [...oldData, { keyId, createdAt, displayName }] : oldData
+        )
 
         setGeneratedKey({
           id: keyId,

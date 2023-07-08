@@ -52,6 +52,7 @@ export async function createApiKey({
   return {
     keyId,
     keySecret,
+    createdAt,
   }
 }
 
