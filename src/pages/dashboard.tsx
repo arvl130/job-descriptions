@@ -175,7 +175,17 @@ export default function Dashboard() {
         </>
       )}
 
-      <dialog ref={dialogRef} className="w-[28rem] rounded-lg text-zinc-700">
+      <dialog
+        ref={dialogRef}
+        className="w-[28rem] rounded-lg text-zinc-700"
+        onClose={() =>
+          setGeneratedKey({
+            id: "",
+            secret: "",
+            displayName: "",
+          })
+        }
+      >
         <h3 className="text-lg font-semibold mb-2">Generate key</h3>
         {generatedKey.id === "" && (
           <GenerateKeyForm
@@ -183,11 +193,6 @@ export default function Dashboard() {
               if (!dialogRef.current) return
 
               dialogRef.current.close()
-              setGeneratedKey({
-                id: "",
-                secret: "",
-                displayName: "",
-              })
             }}
             setGeneratedKey={setGeneratedKey}
           />
@@ -198,11 +203,6 @@ export default function Dashboard() {
               if (!dialogRef.current) return
 
               dialogRef.current.close()
-              setGeneratedKey({
-                id: "",
-                secret: "",
-                displayName: "",
-              })
             }}
             generatedKey={generatedKey}
           />
