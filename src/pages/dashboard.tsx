@@ -15,7 +15,7 @@ const ApiGetResultSchema = z
 
 type ApiGetResultType = z.infer<typeof ApiGetResultSchema>
 
-const ApiMutationResultSchema = z.object({
+const ApiDeleteResultSchema = z.object({
   keyId: z.string().length(20),
   createdAt: z.string().min(1),
   displayName: z.string().max(50),
@@ -74,7 +74,7 @@ export default function Dashboard() {
       if (!response.ok) throw new Error("Fetch error")
       const { result } = await response.json()
 
-      return ApiMutationResultSchema.parse(result)
+      return ApiDeleteResultSchema.parse(result)
     },
     onSuccess: (deletedKey) => {
       queryClient.setQueryData<ApiGetResultType>(["apiKeys"], (oldData) =>
