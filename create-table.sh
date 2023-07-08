@@ -6,13 +6,13 @@ aws dynamodb \
   create-table \
   --table-name JobDescriptions \
   --attribute-definitions \
-    AttributeName=PK,AttributeType=S \
-    AttributeName=SK,AttributeType=S \
+    AttributeName=pk,AttributeType=S \
+    AttributeName=sk,AttributeType=S \
     AttributeName=GSI1PK,AttributeType=S \
     AttributeName=GSI1SK,AttributeType=S \
   --key-schema \
-    AttributeName=PK,KeyType=HASH \
-    AttributeName=SK,KeyType=RANGE \
+    AttributeName=pk,KeyType=HASH \
+    AttributeName=sk,KeyType=RANGE \
   --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
   --global-secondary-indexes \
     "

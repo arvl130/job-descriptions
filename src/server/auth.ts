@@ -10,6 +10,9 @@ const {
   GOOGLE_CLIENT_SECRET,
   NEXT_AUTH_SECRET,
   DYNAMODB_TABLE_NAME,
+  DYNAMODB_INDEX_NAME,
+  DYNAMODB_INDEX_PK,
+  DYNAMODB_INDEX_SK,
 } = serverEnv
 
 export const nextAuthOptions: NextAuthOptions = {
@@ -21,11 +24,14 @@ export const nextAuthOptions: NextAuthOptions = {
   ],
   adapter: DynamoDBAdapter(dynamodbDocument, {
     tableName: DYNAMODB_TABLE_NAME,
-    partitionKey: "PK",
-    sortKey: "SK",
-    indexName: "GSI1",
-    indexPartitionKey: "GSI1PK",
-    indexSortKey: "GSI1SK",
+    // Hardcode these values for now until custom PK and SK
+    // are supported.
+    // Issue: https://github.com/nextauthjs/next-auth/issues/7973
+    partitionKey: "pk",
+    sortKey: "sk",
+    indexName: DYNAMODB_INDEX_NAME,
+    indexPartitionKey: DYNAMODB_INDEX_PK,
+    indexSortKey: DYNAMODB_INDEX_SK,
     // Adapter type is still broken, so we have
     // to assert the type here for now.
     // Issue: https://github.com/nextauthjs/next-auth/issues/6106
