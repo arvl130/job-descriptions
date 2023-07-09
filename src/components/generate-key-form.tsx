@@ -2,6 +2,7 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
+import { useEffect } from "react"
 
 const FormSchema = z.object({
   displayName: z.string().min(1).max(50),
@@ -20,9 +21,11 @@ type ApiResultType = z.infer<typeof ApiResultSchema>
 
 export function GenerateKeyForm({
   setGeneratedKey,
+  isModalOpen,
   closeModal,
 }: {
   closeModal: () => void
+  isModalOpen: boolean
   setGeneratedKey: (key: {
     id: string
     secret: string
@@ -32,11 +35,19 @@ export function GenerateKeyForm({
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors },
   } = useForm<FormType>({
     resolver: zodResolver(FormSchema),
     mode: "onSubmit",
   })
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      reset()
+    }
+  }, [isModalOpen, reset])
+
   const queryClient = useQueryClient()
 
   return (

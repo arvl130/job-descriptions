@@ -48,6 +48,7 @@ export function GenerateKeyDialog({
             dialogRef.current.close()
           }}
           setGeneratedKey={setGeneratedKey}
+          isModalOpen={isOpen}
         />
       )}
       {generatedKey.id !== "" && (
