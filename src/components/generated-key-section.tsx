@@ -42,13 +42,19 @@ function CensoredCodeBlock({ content }: { content: string }) {
         </button>
         <button
           type="button"
-          onClick={() => {
-            setHasCopied(true)
-            if (!timeoutHandle.current) {
-              timeoutHandle.current = setTimeout(() => {
-                setHasCopied(false)
-                timeoutHandle.current = null
-              }, 5000)
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(content)
+
+              setHasCopied(true)
+              if (!timeoutHandle.current) {
+                timeoutHandle.current = setTimeout(() => {
+                  setHasCopied(false)
+                  timeoutHandle.current = null
+                }, 5000)
+              }
+            } catch {
+              console.log("copy to clipboard error")
             }
           }}
           className={`hover:bg-zinc-200 active:bg-zinc-300 transition duration-200 px-1 py-1 rounded-md border ${
