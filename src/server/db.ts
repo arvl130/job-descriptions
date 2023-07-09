@@ -132,3 +132,28 @@ export async function deleteApiKey({
 
   return ApiKeyItemSchema.parse(Attributes)
 }
+
+export async function editApiKey({
+  userId,
+  keyId,
+  displayName,
+}: {
+  userId: string
+  keyId: string
+  displayName: string
+}) {
+  const { Attributes } = await dynamodbDocument.update({
+    TableName: DYNAMODB_TABLE_NAME,
+    Key: {
+      pk: `USER#${userId}`,
+      sk: `APIKEY#${keyId}`,
+    },
+    UpdateExpression: "SET displayName = :displayName",
+    ExpressionAttributeValues: {
+      ":displayName": displayName,
+    },
+    ReturnValues: "ALL_NEW",
+  })
+
+  return ApiKeyItemSchema.parse(Attributes)
+}

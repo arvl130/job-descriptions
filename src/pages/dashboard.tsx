@@ -1,8 +1,77 @@
 import { useState } from "react"
 import { z } from "zod"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { TrashIcon } from "@/components/hero-icons"
+import { PencilSquareIcon, TrashIcon } from "@/components/hero-icons"
 import { GenerateKeyDialog } from "@/components/generate-key-dialog"
+import { EditKeyDialog } from "@/components/edit-key-dialog"
+
+function ApiKeyItem({
+  apiKey,
+  index,
+}: {
+  apiKey: { keyId: string; createdAt: string; displayName: string }
+  index: number
+}) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const queryClient = useQueryClient()
+
+  const { mutate: deleteApiKey } = useMutation({
+    mutationFn: async (keyId: string) => {
+      const response = await fetch(`/api/key/${keyId}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) throw new Error("Fetch error")
+      const { result } = await response.json()
+
+      return ApiDeleteResultSchema.parse(result)
+    },
+    onSuccess: (deletedKey) => {
+      queryClient.setQueryData<ApiGetResultType>(["apiKeys"], (oldData) =>
+        oldData
+          ? oldData.filter((data) => data.keyId !== deletedKey.keyId)
+          : oldData
+      )
+    },
+  })
+
+  return (
+    <article
+      className={`px-4 py-2 flex justify-between ${
+        index === MAX_APIKEY_COUNT - 1 ? "" : "border-b border-zinc-300"
+      }`}
+    >
+      <div>
+        <p className="font-medium">{apiKey.displayName}</p>
+        <p className="text-zinc-500 text-xs">Access Key ID: {apiKey.keyId}</p>
+        <p className="text-zinc-500 text-xs">
+          Created date: {new Date(apiKey.createdAt).toLocaleString()}
+        </p>
+      </div>
+      <div className="flex gap-2 items-start">
+        <button
+          type="button"
+          className="hover:bg-zinc-100 px-2 py-2 rounded-md transition duration-200"
+          onClick={() => deleteApiKey(apiKey.keyId)}
+        >
+          <TrashIcon className="w-5 h-5" />
+        </button>
+        <button
+          type="button"
+          className="hover:bg-zinc-100 px-2 py-2 rounded-md transition duration-200"
+          onClick={() => setIsDialogOpen(true)}
+        >
+          <PencilSquareIcon className="w-5 h-5" />
+        </button>
+      </div>
+      <EditKeyDialog
+        apiKey={apiKey}
+        isOpen={isDialogOpen}
+        close={() => setIsDialogOpen(false)}
+      />
+    </article>
+  )
+}
 
 const ApiGetResultSchema = z
   .object({
@@ -55,28 +124,6 @@ export default function Dashboard() {
     },
   })
 
-  const queryClient = useQueryClient()
-
-  const { mutate: deleteApiKey } = useMutation({
-    mutationFn: async (keyId: string) => {
-      const response = await fetch(`/api/key/${keyId}`, {
-        method: "DELETE",
-      })
-
-      if (!response.ok) throw new Error("Fetch error")
-      const { result } = await response.json()
-
-      return ApiDeleteResultSchema.parse(result)
-    },
-    onSuccess: (deletedKey) => {
-      queryClient.setQueryData<ApiGetResultType>(["apiKeys"], (oldData) =>
-        oldData
-          ? oldData.filter((data) => data.keyId !== deletedKey.keyId)
-          : oldData
-      )
-    },
-  })
-
   return (
     <main className="max-w-xl w-full mx-auto text-zinc-700 py-12 px-6">
       <header>
@@ -112,34 +159,11 @@ export default function Dashboard() {
               ) : (
                 <section className="min-h-[20rem] border-x border-b border-zinc-300">
                   {apiKeys.map((apiKey, index) => (
-                    <article
+                    <ApiKeyItem
                       key={apiKey.keyId}
-                      className={`px-4 py-2 flex justify-between ${
-                        index === MAX_APIKEY_COUNT - 1
-                          ? ""
-                          : "border-b border-zinc-300"
-                      }`}
-                    >
-                      <div>
-                        <p className="font-medium">{apiKey.displayName}</p>
-                        <p className="text-zinc-500 text-xs">
-                          Access Key ID: {apiKey.keyId}
-                        </p>
-                        <p className="text-zinc-500 text-xs">
-                          Created date:{" "}
-                          {new Date(apiKey.createdAt).toLocaleString()}
-                        </p>
-                      </div>
-                      <div>
-                        <button
-                          type="button"
-                          className="hover:bg-zinc-100 px-2 py-2 rounded-md transition duration-200"
-                          onClick={() => deleteApiKey(apiKey.keyId)}
-                        >
-                          <TrashIcon className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </article>
+                      apiKey={apiKey}
+                      index={index}
+                    />
                   ))}
                   {apiKeys.length < MAX_APIKEY_COUNT && (
                     <article className="flex justify-center px-4 py-4">
