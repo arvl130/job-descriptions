@@ -1,9 +1,8 @@
-import { GenerateKeyForm } from "@/components/generate-key-form"
-import { GeneratedKeySection } from "@/components/generated-key-section"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { z } from "zod"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { TrashIcon } from "@/components/hero-icons"
+import { GenerateKeyDialog } from "@/components/generate-key-dialog"
 
 const ApiGetResultSchema = z
   .object({
@@ -24,12 +23,7 @@ const ApiDeleteResultSchema = z.object({
 const MAX_APIKEY_COUNT = 5
 
 export default function Dashboard() {
-  const dialogRef = useRef<HTMLDialogElement | null>(null)
-  const [generatedKey, setGeneratedKey] = useState({
-    id: "",
-    secret: "",
-    displayName: "",
-  })
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   async function fetchApiKeys() {
     const response = await fetch("/api/key")
@@ -112,11 +106,7 @@ export default function Dashboard() {
                   <button
                     type="button"
                     className="w-44 py-2 bg-zinc-700 hover:bg-zinc-600 transition duration-200 text-white font-medium rounded-md"
-                    onClick={() => {
-                      if (!dialogRef.current) return
-
-                      dialogRef.current.showModal()
-                    }}
+                    onClick={() => setIsDialogOpen(true)}
                   >
                     Generate new key
                   </button>
@@ -158,11 +148,7 @@ export default function Dashboard() {
                       <button
                         type="button"
                         className="px-4 py-2 text-sm hover:bg-zinc-700 hover:text-white border border-zinc-700 transition duration-200 font-semibold rounded-md"
-                        onClick={() => {
-                          if (!dialogRef.current) return
-
-                          dialogRef.current.showModal()
-                        }}
+                        onClick={() => setIsDialogOpen(true)}
                       >
                         New &#xFF0B;
                       </button>
@@ -175,39 +161,10 @@ export default function Dashboard() {
         </>
       )}
 
-      <dialog
-        ref={dialogRef}
-        className="w-[28rem] rounded-lg text-zinc-700"
-        onClose={() =>
-          setGeneratedKey({
-            id: "",
-            secret: "",
-            displayName: "",
-          })
-        }
-      >
-        <h3 className="text-lg font-semibold mb-2">Generate key</h3>
-        {generatedKey.id === "" && (
-          <GenerateKeyForm
-            closeModal={() => {
-              if (!dialogRef.current) return
-
-              dialogRef.current.close()
-            }}
-            setGeneratedKey={setGeneratedKey}
-          />
-        )}
-        {generatedKey.id !== "" && (
-          <GeneratedKeySection
-            closeModal={() => {
-              if (!dialogRef.current) return
-
-              dialogRef.current.close()
-            }}
-            generatedKey={generatedKey}
-          />
-        )}
-      </dialog>
+      <GenerateKeyDialog
+        isOpen={isDialogOpen}
+        close={() => setIsDialogOpen(false)}
+      />
     </main>
   )
 }
