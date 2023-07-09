@@ -25,36 +25,34 @@ const MAX_APIKEY_COUNT = 5
 export default function Dashboard() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  async function fetchApiKeys() {
-    const response = await fetch("/api/key")
-
-    if (!response.ok) {
-      console.log("Fetch error")
-      throw new Error("Fetch error")
-    }
-
-    const { results } = await response.json()
-    const validApiKeys = ApiGetResultSchema.parse(results)
-    validApiKeys.sort((first, second) => {
-      const firstDate = new Date(first.createdAt).getTime()
-      const secondDate = new Date(second.createdAt).getTime()
-
-      if (firstDate === secondDate) return 0
-      if (firstDate < secondDate) return 1
-
-      return -1
-    })
-
-    return validApiKeys
-  }
-
   const {
     data: apiKeys,
     isLoading,
     isError,
   } = useQuery({
     queryKey: ["apiKeys"],
-    queryFn: fetchApiKeys,
+    queryFn: async () => {
+      const response = await fetch("/api/key")
+
+      if (!response.ok) {
+        throw new Error("Fetch error")
+      }
+
+      const { results } = await response.json()
+      const validApiKeys = ApiGetResultSchema.parse(results)
+
+      validApiKeys.sort((first, second) => {
+        const firstDate = new Date(first.createdAt).getTime()
+        const secondDate = new Date(second.createdAt).getTime()
+
+        if (firstDate === secondDate) return 0
+        if (firstDate < secondDate) return 1
+
+        return -1
+      })
+
+      return validApiKeys
+    },
   })
 
   const queryClient = useQueryClient()
