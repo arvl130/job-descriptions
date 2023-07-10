@@ -44,12 +44,12 @@ function Navbar() {
   )
 }
 
+const queryClient = new QueryClient()
+
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
-  const queryClient = new QueryClient()
-
   return (
     <>
       <Head>
