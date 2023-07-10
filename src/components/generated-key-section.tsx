@@ -83,11 +83,11 @@ export function GeneratedKeySection({
 }) {
   return (
     <section>
-      <p className="font-medium mb-1">ID</p>
+      <p className="font-medium mb-1">Access Key ID</p>
       <code className="block bg-zinc-100 px-4 py-2 rounded-md mb-3">
         {generatedKey.id}
       </code>
-      <p className="font-medium mb-1">Secret</p>
+      <p className="font-medium mb-1">Access Key Secret</p>
       <CensoredCodeBlock content={generatedKey.secret} />
       <p className="text-xs mt-2">
         This will only be shown once. Copy this key secret and store it in a
