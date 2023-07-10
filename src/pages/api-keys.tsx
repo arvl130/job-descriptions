@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { PencilSquareIcon, TrashIcon } from "@/components/hero-icons"
 import { GenerateKeyDialog } from "@/components/generate-key-dialog"
 import { EditKeyDialog } from "@/components/edit-key-dialog"
+import { SideNav } from "@/components/sidenav"
 
 function ApiKeyItem({
   apiKey,
@@ -91,7 +92,7 @@ const ApiDeleteResultSchema = z.object({
 
 const MAX_APIKEY_COUNT = 5
 
-export default function Dashboard() {
+export default function ApiKeys() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const {
@@ -125,68 +126,73 @@ export default function Dashboard() {
   })
 
   return (
-    <main className="max-w-xl w-full mx-auto text-zinc-700 py-12 px-6">
-      <header>
-        <input
-          type="text"
-          placeholder="Search keys ..."
-          className="bg-zinc-50 placeholder-zinc-400 w-full px-4 py-2 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 border border-zinc-300 rounded-t-md focus:border focus:border-purple-600 transition duration-100"
-        />
-      </header>
-      {isLoading ? (
-        <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
-          Loading ...
-        </section>
-      ) : (
-        <>
-          {isError ? (
+    <div className="max-w-6xl mx-auto w-full grid grid-cols-[16rem_auto]">
+      <SideNav />
+      <main className="text-zinc-700 py-12 px-6">
+        <div className="max-w-xl mx-auto">
+          <header>
+            <input
+              type="text"
+              placeholder="Search keys ..."
+              className="bg-zinc-50 placeholder-zinc-400 w-full px-4 py-2 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 border border-zinc-300 rounded-t-md focus:border focus:border-purple-600 transition duration-100"
+            />
+          </header>
+          {isLoading ? (
             <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
-              An error occured while loading your API keys. :{"("}
+              Loading ...
             </section>
           ) : (
             <>
-              {apiKeys.length === 0 ? (
+              {isError ? (
                 <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
-                  <p className="mb-4 text-zinc-400">No keys found.</p>
-                  <button
-                    type="button"
-                    className="w-44 py-2 bg-zinc-700 hover:bg-zinc-600 transition duration-200 text-white font-medium rounded-md"
-                    onClick={() => setIsDialogOpen(true)}
-                  >
-                    Generate new key
-                  </button>
+                  An error occured while loading your API keys. :{"("}
                 </section>
               ) : (
-                <section className="min-h-[20rem] border-x border-b border-zinc-300">
-                  {apiKeys.map((apiKey, index) => (
-                    <ApiKeyItem
-                      key={apiKey.keyId}
-                      apiKey={apiKey}
-                      index={index}
-                    />
-                  ))}
-                  {apiKeys.length < MAX_APIKEY_COUNT && (
-                    <article className="flex justify-center px-4 py-4">
+                <>
+                  {apiKeys.length === 0 ? (
+                    <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
+                      <p className="mb-4 text-zinc-400">No keys found.</p>
                       <button
                         type="button"
-                        className="px-4 py-2 text-sm hover:bg-zinc-700 hover:text-white border border-zinc-700 transition duration-200 font-semibold rounded-md"
+                        className="w-44 py-2 bg-zinc-700 hover:bg-zinc-600 transition duration-200 text-white font-medium rounded-md"
                         onClick={() => setIsDialogOpen(true)}
                       >
-                        New &#xFF0B;
+                        Generate new key
                       </button>
-                    </article>
+                    </section>
+                  ) : (
+                    <section className="min-h-[20rem] border-x border-b border-zinc-300">
+                      {apiKeys.map((apiKey, index) => (
+                        <ApiKeyItem
+                          key={apiKey.keyId}
+                          apiKey={apiKey}
+                          index={index}
+                        />
+                      ))}
+                      {apiKeys.length < MAX_APIKEY_COUNT && (
+                        <article className="flex justify-center px-4 py-4">
+                          <button
+                            type="button"
+                            className="px-4 py-2 text-sm hover:bg-zinc-700 hover:text-white border border-zinc-700 transition duration-200 font-semibold rounded-md"
+                            onClick={() => setIsDialogOpen(true)}
+                          >
+                            New &#xFF0B;
+                          </button>
+                        </article>
+                      )}
+                    </section>
                   )}
-                </section>
+                </>
               )}
             </>
           )}
-        </>
-      )}
 
-      <GenerateKeyDialog
-        isOpen={isDialogOpen}
-        close={() => setIsDialogOpen(false)}
-      />
-    </main>
+          <GenerateKeyDialog
+            isOpen={isDialogOpen}
+            close={() => setIsDialogOpen(false)}
+          />
+        </div>
+      </main>
+    </div>
   )
 }
