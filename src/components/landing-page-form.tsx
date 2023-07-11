@@ -5,11 +5,14 @@ import { z } from "zod"
 import { useQuery } from "@tanstack/react-query"
 import { ChevronLeft, ChevronRight } from "./hero-icons"
 import { SearchResultItem } from "./search-result-item"
+import Link from "next/link"
 
 export const SEARCH_RESULT_PAGE_SIZE = 5
 
 const FormSchema = z.object({
   term: z.string(),
+  keyId: z.string().length(20).startsWith("AKID"),
+  keySecret: z.string().length(32),
 })
 
 type FormType = z.infer<typeof FormSchema>
@@ -29,16 +32,22 @@ const ApiSearchResultSchema = z.object({
   limit: z.number(),
 })
 
-export function LandingPageForm() {
+export function LandingPageForm({ userId }: { userId: string }) {
   const { handleSubmit, register, setValue } = useForm<FormType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       term: "",
+      keyId: "",
+      keySecret: "",
     },
   })
 
   const [limit, setLimit] = useState(10)
   const [searchTerm, setSearchTerm] = useState("")
+  const [apiKey, setApiKey] = useState({
+    keyId: "",
+    keySecret: "",
+  })
 
   const {
     data: jobDescriptions,
@@ -47,7 +56,7 @@ export function LandingPageForm() {
   } = useQuery({
     queryKey: ["searchJobDescriptions", searchTerm, limit],
     queryFn: async () => {
-      const generatedUrl = `/api/search/${searchTerm}?limit=${limit}`
+      const generatedUrl = `/api/search/${searchTerm}?limit=${limit}&userId=${userId}&accessKeyId=${apiKey.keyId}&accessKeySecret=${apiKey.keySecret}`
       const response = await fetch(generatedUrl)
 
       const data = await response.json()
@@ -76,8 +85,43 @@ export function LandingPageForm() {
     <>
       <form
         className="mb-3"
-        onSubmit={handleSubmit((formData) => setSearchTerm(formData.term))}
+        onSubmit={handleSubmit((formData) => {
+          setApiKey({
+            keyId: formData.keyId,
+            keySecret: formData.keySecret,
+          })
+          setSearchTerm(formData.term)
+        })}
       >
+        <p className="mb-3 text-center text-sm">
+          You may obtain an API key from the{" "}
+          <Link href="/api-keys" className="font-medium hover:underline">
+            API Keys
+          </Link>{" "}
+          page.
+        </p>
+        <div className="grid grid-cols-[7rem_1fr] mb-3">
+          <label className="bg-zinc-100 border-y border-l border-zinc-300 rounded-l-md text-zinc-700 flex items-center justify-center font-medium">
+            Key ID
+          </label>
+          <input
+            type="text"
+            placeholder="Enter your access key ID ..."
+            className="w-full px-4 py-2 rounded-r-md border border-zinc-300 transition duration-100 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border-purple-600"
+            {...register("keyId")}
+          />
+        </div>
+        <div className="grid grid-cols-[7rem_1fr] mb-12">
+          <label className="bg-zinc-100 border-y border-l border-zinc-300 rounded-l-md text-zinc-700 flex items-center justify-center font-medium">
+            Key Secret
+          </label>
+          <input
+            type="password"
+            placeholder="Enter your access key secret ..."
+            className="w-full px-4 py-2 rounded-r-md border border-zinc-300 transition duration-100 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border-purple-600"
+            {...register("keySecret")}
+          />
+        </div>
         <div className="grid grid-cols-[1fr_6rem]">
           <input
             type="text"
@@ -149,7 +193,7 @@ export function LandingPageForm() {
                         <p className="font-medium">Results:</p>
                         <div className="flex gap-2">
                           <a
-                            href={`/api/search/${searchTerm}?limit=${limit}`}
+                            href={`/api/search/${searchTerm}?limit=${limit}&userId=${userId}&accessKeyId=${apiKey.keyId}&accessKeySecret=${apiKey.keySecret}`}
                             target="_blank"
                             rel="noreferrer"
                             className="font-mono text-sm inline-block px-2 py-1 border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100  focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border focus:border-purple-600"

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { z, ZodError } from "zod"
-import { getJobs } from "@/server/db"
+import { getJobs, isValidApiKey } from "@/server/db"
 import NextCors from "nextjs-cors"
 
 export type SearchResult = {
@@ -21,6 +21,9 @@ export type SearchResult = {
 const InputSchema = z.object({
   term: z.string(),
   limit: z.number().min(5).max(100).default(50),
+  userId: z.string().uuid(),
+  accessKeyId: z.string().length(20).startsWith("AKID"),
+  accessKeySecret: z.string().length(32),
 })
 
 export default async function handler(
@@ -40,11 +43,27 @@ export default async function handler(
   }
 
   try {
-    const { term, limit } = req.query
+    const { term, limit, userId, accessKeyId, accessKeySecret } = req.query
     const input = InputSchema.parse({
       term,
       limit: typeof limit === "string" ? parseInt(limit) : undefined,
+      userId,
+      accessKeyId,
+      accessKeySecret,
     })
+
+    const isValid = await isValidApiKey({
+      userId: input.userId,
+      keyId: input.accessKeyId,
+      keySecret: input.accessKeySecret,
+    })
+
+    if (!isValid) {
+      res.status(401).json({
+        message: "Unauthorized",
+      })
+      return
+    }
 
     const jobs = await getJobs({
       term: input.term,

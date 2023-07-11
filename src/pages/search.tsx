@@ -6,7 +6,7 @@ import { useEffect } from "react"
 
 export default function Search() {
   const router = useRouter()
-  const { status } = useSession({
+  const { status, data: session } = useSession({
     required: true,
     onUnauthenticated() {
       router.push("/")
@@ -25,7 +25,7 @@ export default function Search() {
       <SideNav />
       <main className="px-6 py-12">
         <div className="max-w-xl mx-auto">
-          <LandingPageForm />
+          <LandingPageForm userId={session.user?.id as string} />
         </div>
       </main>
     </div>
