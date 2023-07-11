@@ -81,7 +81,7 @@ export function LandingPageForm() {
         <div className="grid grid-cols-[1fr_6rem]">
           <input
             type="text"
-            placeholder=" Type a job title ..."
+            placeholder="Type a job title ..."
             className="w-full px-4 py-2 rounded-l-md border border-gray-300 transition duration-100 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border-purple-600"
             {...register("term")}
           />
