@@ -1,10 +1,12 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { z } from "zod"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { PencilSquareIcon, TrashIcon } from "@/components/hero-icons"
 import { GenerateKeyDialog } from "@/components/generate-key-dialog"
 import { EditKeyDialog } from "@/components/edit-key-dialog"
 import { SideNav } from "@/components/sidenav"
+import { useRouter } from "next/router"
+import { useSession } from "next-auth/react"
 
 function ApiKeyItem({
   apiKey,
@@ -93,6 +95,18 @@ const ApiDeleteResultSchema = z.object({
 const MAX_APIKEY_COUNT = 5
 
 export default function ApiKeys() {
+  const router = useRouter()
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push("/")
+    },
+  })
+
+  useEffect(() => {
+    if (status === "loading") return
+  }, [status])
+
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const {
@@ -124,6 +138,9 @@ export default function ApiKeys() {
       return validApiKeys
     },
   })
+
+  if (status === "loading")
+    return <div className="text-center px-6 py-12">Loading ...</div>
 
   return (
     <div className="max-w-6xl mx-auto w-full grid grid-cols-[16rem_auto]">
