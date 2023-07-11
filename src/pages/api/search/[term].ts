@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { runCorsMiddleware } from "@/server/cors"
 import { z, ZodError } from "zod"
 import { getJobs } from "@/server/db"
+import NextCors from "nextjs-cors"
 
 export type SearchResult = {
   message: string
@@ -27,7 +27,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<SearchResult>
 ) {
-  await runCorsMiddleware(req, res)
+  await NextCors(req, res, {
+    methods: ["GET"],
+    origin: ["http://localhost", "http://localhost:3000"],
+  })
 
   if (req.method !== "GET") {
     res.status(405).json({

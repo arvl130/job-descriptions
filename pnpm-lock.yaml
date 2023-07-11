@@ -50,6 +50,9 @@ dependencies:
   next-auth:
     specifier: ^4.22.1
     version: 4.22.1(next@13.4.9)(react-dom@18.2.0)(react@18.2.0)
+  nextjs-cors:
+    specifier: ^2.1.2
+    version: 2.1.2(next@13.4.9)
   pg:
     specifier: ^8.8.0
     version: 8.9.0
@@ -2790,6 +2793,15 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
+    dev: false
+
+  /nextjs-cors@2.1.2(next@13.4.9):
+    resolution: {integrity: sha512-2yOVivaaf2ILe4f/qY32hnj3oC77VCOsUQJQfhVMGsXE/YMEWUY2zy78sH9FKUCM7eG42/l3pDofIzMD781XGA==}
+    peerDependencies:
+      next: ^8.1.1-canary.54 || ^9.0.0 || ^10.0.0-0 || ^11.0.0 || ^12.0.0 || ^13.0.0
+    dependencies:
+      cors: 2.8.5
+      next: 13.4.9(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /node-releases@2.0.8:
