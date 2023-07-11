@@ -108,6 +108,7 @@ export default function ApiKeys() {
   }, [status])
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
 
   const {
     data: apiKeys,
@@ -139,6 +140,16 @@ export default function ApiKeys() {
     },
   })
 
+  function visibleApikeys(
+    apiKeys: {
+      keyId: string
+      createdAt: string
+      displayName: string
+    }[]
+  ) {
+    return apiKeys.filter((apiKey) => apiKey.displayName.includes(searchTerm))
+  }
+
   if (status === "loading")
     return <div className="text-center px-6 py-12">Loading ...</div>
 
@@ -152,6 +163,7 @@ export default function ApiKeys() {
               type="text"
               placeholder="Search keys ..."
               className="bg-zinc-50 placeholder-zinc-400 w-full px-4 py-2 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 border border-zinc-300 rounded-t-md focus:border focus:border-purple-600 transition duration-100"
+              onChange={(e) => setSearchTerm(e.currentTarget.value)}
             />
           </header>
           {isLoading ? (
@@ -179,13 +191,22 @@ export default function ApiKeys() {
                     </section>
                   ) : (
                     <section className="min-h-[20rem] border-x border-b border-zinc-300">
-                      {apiKeys.map((apiKey, index) => (
-                        <ApiKeyItem
-                          key={apiKey.keyId}
-                          apiKey={apiKey}
-                          index={index}
-                        />
-                      ))}
+                      {visibleApikeys(apiKeys).length === 0 ? (
+                        <p className="text-center pt-4 text-zinc-400">
+                          No matching keys.
+                        </p>
+                      ) : (
+                        <>
+                          {visibleApikeys(apiKeys).map((apiKey, index) => (
+                            <ApiKeyItem
+                              key={apiKey.keyId}
+                              apiKey={apiKey}
+                              index={index}
+                            />
+                          ))}
+                        </>
+                      )}
+
                       {apiKeys.length < MAX_APIKEY_COUNT && (
                         <article className="flex justify-center px-4 py-4">
                           <button
