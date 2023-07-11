@@ -1,4 +1,5 @@
 import { signIn, useSession } from "next-auth/react"
+import Link from "next/link"
 import { useRouter } from "next/router"
 
 export default function Home() {
@@ -32,14 +33,15 @@ export default function Home() {
                 })
             }}
           >
-            {status === "loading" && <br />}
-            {status === "unauthenticated" && <>Get started</>}
-            {status === "authenticated" && <>Search</>}
+            {status === "loading" ? <br /> : <>Get Started</>}
           </button>
 
-          <a href="#" className="w-32 py-2 text-center font-semibold">
+          <Link
+            href="/getting-started"
+            className="w-32 py-2 text-center font-semibold"
+          >
             Learn more →
-          </a>
+          </Link>
         </div>
       </header>
     </main>

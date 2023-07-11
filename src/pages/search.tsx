@@ -5,12 +5,8 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 
 export default function Search() {
-  const router = useRouter()
   const { status, data: session } = useSession({
     required: true,
-    onUnauthenticated() {
-      router.push("/")
-    },
   })
 
   useEffect(() => {

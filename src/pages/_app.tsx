@@ -31,7 +31,10 @@ function Navbar() {
             }
             `}
             onClick={() => {
-              if (status === "authenticated") signOut()
+              if (status === "authenticated")
+                signOut({
+                  callbackUrl: "/",
+                })
               if (status === "unauthenticated")
                 signIn("google", {
                   callbackUrl: "/search",

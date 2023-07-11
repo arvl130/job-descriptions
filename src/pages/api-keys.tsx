@@ -95,12 +95,8 @@ const ApiDeleteResultSchema = z.object({
 const MAX_APIKEY_COUNT = 5
 
 export default function ApiKeys() {
-  const router = useRouter()
   const { status } = useSession({
     required: true,
-    onUnauthenticated() {
-      router.push("/")
-    },
   })
 
   useEffect(() => {
