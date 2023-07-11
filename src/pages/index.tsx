@@ -25,13 +25,16 @@ export default function Home() {
             }
             `}
             onClick={() => {
-              if (status === "authenticated") router.push("/dashboard")
-              if (status === "unauthenticated") signIn()
+              if (status === "authenticated") router.push("/search")
+              if (status === "unauthenticated")
+                signIn("google", {
+                  callbackUrl: "/search",
+                })
             }}
           >
             {status === "loading" && <br />}
             {status === "unauthenticated" && <>Get started</>}
-            {status === "authenticated" && <>Dashboard</>}
+            {status === "authenticated" && <>Search</>}
           </button>
 
           <a href="#" className="w-32 py-2 text-center font-semibold">

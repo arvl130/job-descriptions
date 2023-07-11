@@ -32,7 +32,10 @@ function Navbar() {
             `}
             onClick={() => {
               if (status === "authenticated") signOut()
-              if (status === "unauthenticated") signIn()
+              if (status === "unauthenticated")
+                signIn("google", {
+                  callbackUrl: "/search",
+                })
             }}
           >
             {status === "loading" && <br />}
