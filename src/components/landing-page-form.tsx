@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { ChevronLeft, ChevronRight } from "./hero-icons"
 import { SearchResultItem } from "./search-result-item"
 import Link from "next/link"
@@ -10,7 +10,7 @@ import Link from "next/link"
 export const SEARCH_RESULT_PAGE_SIZE = 5
 
 const FormSchema = z.object({
-  term: z.string(),
+  term: z.string().min(1),
   keyId: z.string().length(20).startsWith("AKID"),
   keySecret: z.string().length(32),
 })
@@ -43,19 +43,17 @@ export function LandingPageForm({ userId }: { userId: string }) {
   })
 
   const [limit, setLimit] = useState(10)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [apiKey, setApiKey] = useState({
-    keyId: "",
-    keySecret: "",
-  })
+  const [jobDescriptions, setJobDescriptions] = useState<JobItemType[]>([])
 
-  const {
-    data: jobDescriptions,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["searchJobDescriptions", searchTerm, limit],
-    queryFn: async () => {
+  const { isLoading, isError, mutate } = useMutation({
+    mutationKey: ["searchJobDescriptions"],
+    mutationFn: async ({
+      searchTerm,
+      apiKey,
+    }: {
+      searchTerm: string
+      apiKey: { keyId: string; keySecret: string }
+    }) => {
       const generatedUrl = `/api/search/${searchTerm}?limit=${limit}&userId=${userId}&accessKeyId=${apiKey.keyId}&accessKeySecret=${apiKey.keySecret}`
       const response = await fetch(generatedUrl)
 
@@ -65,7 +63,21 @@ export function LandingPageForm({ userId }: { userId: string }) {
 
       return jobs
     },
-    enabled: searchTerm !== "",
+    onSuccess: (data, variables) => {
+      setSuccessfulSearch({
+        apiKey: variables.apiKey,
+        searchTerm: variables.searchTerm,
+      })
+      setJobDescriptions(data)
+    },
+  })
+
+  const [successfulSearch, setSuccessfulSearch] = useState({
+    searchTerm: "",
+    apiKey: {
+      keyId: "",
+      keySecret: "",
+    },
   })
 
   const [currentPage, setCurrentPage] = useState(0)
@@ -86,11 +98,13 @@ export function LandingPageForm({ userId }: { userId: string }) {
       <form
         className="mb-3"
         onSubmit={handleSubmit((formData) => {
-          setApiKey({
-            keyId: formData.keyId,
-            keySecret: formData.keySecret,
+          mutate({
+            searchTerm: formData.term,
+            apiKey: {
+              keyId: formData.keyId,
+              keySecret: formData.keySecret,
+            },
           })
-          setSearchTerm(formData.term)
         })}
       >
         <p className="mb-3 text-center text-sm">
@@ -138,108 +152,90 @@ export function LandingPageForm({ userId }: { userId: string }) {
         </div>
       </form>
 
-      {searchTerm === "" ? (
-        <section className="pt-2">
-          <p className="text-center">
-            Try searching for:{" "}
-            <button
-              type="button"
-              onClick={(e) => {
-                setValue("term", "electrician")
-              }}
-              className="font-medium hover:underline underline-offset-4"
-            >
-              electrician
-            </button>
-          </p>
-        </section>
+      {isLoading ? (
+        <div className="pt-2">
+          <p className="text-center mb-3">Working on it ...</p>
+        </div>
       ) : (
         <>
-          {isLoading ? (
+          {isError ? (
             <div className="pt-2">
-              <p className="text-center mb-3">Working on it ...</p>
+              <p className="text-center mb-3">
+                An error occured while searching. :{"("}
+              </p>
+              <p className="text-center mb-3">Your API keys may be invalid.</p>
             </div>
           ) : (
             <>
-              {isError ? (
-                <div className="pt-2">
-                  <p className="text-center mb-3">
-                    An error occured while searching :{"("}
-                  </p>
-                </div>
-              ) : (
+              {jobDescriptions.length === 0 ? (
                 <>
-                  {jobDescriptions.length === 0 ? (
-                    <>
-                      <section className="pt-2">
-                        <p className="text-center mb-3">No results found.</p>
-                      </section>
-                      <section className="pt-2">
-                        <p className="text-center">
-                          Try searching for:{" "}
-                          <button
-                            type="button"
-                            onClick={() => setValue("term", "electrician")}
-                            className="font-medium hover:underline underline-offset-4"
-                          >
-                            electrician
-                          </button>
-                        </p>
-                      </section>
-                    </>
-                  ) : (
-                    <section className="border border-zinc-300 rounded-t-md">
-                      <div className="flex justify-between items-center px-4 py-2 border-b border-zinc-300">
-                        <p className="font-medium">Results:</p>
-                        <div className="flex gap-2">
-                          <a
-                            href={`/api/search/${searchTerm}?limit=${limit}&userId=${userId}&accessKeyId=${apiKey.keyId}&accessKeySecret=${apiKey.keySecret}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="font-mono text-sm inline-block px-2 py-1 border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100  focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border focus:border-purple-600"
-                          >
-                            json
-                          </a>
-                          <button
-                            type="button"
-                            className="inline-block disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed font-medium border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100"
-                            disabled={currentPage === 0}
-                            onClick={() =>
-                              setCurrentPage(
-                                (currCurrentPage) => currCurrentPage - 1
-                              )
-                            }
-                          >
-                            <ChevronLeft className="w-5 h-5" />
-                          </button>
-                          <button
-                            type="button"
-                            className="inline-block disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed font-medium border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100"
-                            disabled={
-                              currentPage === getPageCount(jobDescriptions) - 1
-                            }
-                            onClick={() =>
-                              setCurrentPage(
-                                (currCurrentPage) => currCurrentPage + 1
-                              )
-                            }
-                          >
-                            <ChevronRight className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </div>
-                      {getVisibleJobDescriptions(jobDescriptions).map(
-                        (jobDescription, index) => (
-                          <SearchResultItem
-                            key={`${jobDescription.category}-${jobDescription.title}-${jobDescription.short_title}`}
-                            jobDescription={jobDescription}
-                            index={index}
-                          />
-                        )
-                      )}
-                    </section>
-                  )}
+                  <section className="pt-2">
+                    <p className="text-center mb-3">No results found.</p>
+                  </section>
+                  <section className="pt-2">
+                    <p className="text-center">
+                      Try searching for:{" "}
+                      <button
+                        type="button"
+                        onClick={() => setValue("term", "electrician")}
+                        className="font-medium hover:underline underline-offset-4"
+                      >
+                        electrician
+                      </button>
+                    </p>
+                  </section>
                 </>
+              ) : (
+                <section className="border border-zinc-300 rounded-t-md">
+                  <div className="flex justify-between items-center px-4 py-2 border-b border-zinc-300">
+                    <p className="font-medium">Results:</p>
+                    <div className="flex gap-2">
+                      <a
+                        href={`/api/search/${successfulSearch.searchTerm}?limit=${limit}&userId=${userId}&accessKeyId=${successfulSearch.apiKey.keyId}&accessKeySecret=${successfulSearch.apiKey.keySecret}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-mono text-sm inline-block px-2 py-1 border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100  focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border focus:border-purple-600"
+                      >
+                        json
+                      </a>
+                      <button
+                        type="button"
+                        className="inline-block disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed font-medium border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100"
+                        disabled={currentPage === 0}
+                        onClick={() =>
+                          setCurrentPage(
+                            (currCurrentPage) => currCurrentPage - 1
+                          )
+                        }
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-block disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed font-medium border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100"
+                        disabled={
+                          currentPage === getPageCount(jobDescriptions) - 1
+                        }
+                        onClick={() =>
+                          setCurrentPage(
+                            (currCurrentPage) => currCurrentPage + 1
+                          )
+                        }
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                  {getVisibleJobDescriptions(jobDescriptions).map(
+                    (jobDescription, index) => (
+                      <SearchResultItem
+                        key={`${jobDescription.category}-${jobDescription.title}-${jobDescription.short_title}`}
+                        jobDescription={jobDescription}
+                        index={index}
+                      />
+                    )
+                  )}
+                </section>
               )}
             </>
           )}
