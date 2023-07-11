@@ -156,7 +156,8 @@ export default function ApiKeys() {
   return (
     <div className="max-w-6xl mx-auto w-full grid grid-cols-[16rem_auto]">
       <SideNav />
-      <main className="text-zinc-700 py-12 px-6">
+      <main className="text-zinc-700 py-12 px-6 max-w-3xl mx-auto w-full">
+        <h2 className="text-2xl font-semibold mb-4">API Keys</h2>
         <div className="max-w-xl mx-auto">
           <header>
             <input

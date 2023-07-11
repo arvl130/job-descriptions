@@ -23,7 +23,8 @@ export default function Search() {
   return (
     <div className="max-w-6xl mx-auto w-full grid grid-cols-[16rem_1fr]">
       <SideNav />
-      <main className="px-6 py-12">
+      <main className="px-6 py-12 text-zinc-700 max-w-3xl mx-auto w-full">
+        <h2 className="text-2xl font-semibold mb-4">Online Search</h2>
         <div className="max-w-xl mx-auto">
           <LandingPageForm userId={session.user?.id as string} />
         </div>
