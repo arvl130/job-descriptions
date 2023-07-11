@@ -82,7 +82,7 @@ export function LandingPageForm() {
           <input
             type="text"
             placeholder="Type a job title ..."
-            className="w-full px-4 py-2 rounded-l-md border border-gray-300 transition duration-100 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border-purple-600"
+            className="w-full px-4 py-2 rounded-l-md border border-zinc-300 transition duration-100 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border-purple-600"
             {...register("term")}
           />
           <button
@@ -152,13 +152,13 @@ export function LandingPageForm() {
                             href={`/api/search/${searchTerm}?limit=${limit}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="font-mono text-sm inline-block px-2 py-1 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-100  focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border focus:border-purple-600 focus:bg-gray-50"
+                            className="font-mono text-sm inline-block px-2 py-1 border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100  focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border focus:border-purple-600"
                           >
                             json
                           </a>
                           <button
                             type="button"
-                            className="inline-block disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed font-medium border border-gray-300 rounded-md hover:bg-gray-50 transition duration-100"
+                            className="inline-block disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed font-medium border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100"
                             disabled={currentPage === 0}
                             onClick={() =>
                               setCurrentPage(
@@ -170,7 +170,7 @@ export function LandingPageForm() {
                           </button>
                           <button
                             type="button"
-                            className="inline-block disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed font-medium border border-gray-300 rounded-md hover:bg-gray-50 transition duration-100"
+                            className="inline-block disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed font-medium border border-zinc-300 rounded-md hover:bg-zinc-100 transition duration-100"
                             disabled={
                               currentPage === getPageCount(jobDescriptions) - 1
                             }
