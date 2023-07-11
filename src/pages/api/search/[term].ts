@@ -29,7 +29,7 @@ export default async function handler(
 ) {
   await NextCors(req, res, {
     methods: ["GET"],
-    origin: ["http://localhost", "http://localhost:3000"],
+    origin: "*",
   })
 
   if (req.method !== "GET") {
