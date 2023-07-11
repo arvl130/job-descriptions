@@ -33,7 +33,12 @@ const ApiSearchResultSchema = z.object({
 })
 
 export function LandingPageForm({ userId }: { userId: string }) {
-  const { handleSubmit, register, setValue } = useForm<FormType>({
+  const {
+    handleSubmit,
+    register,
+    setValue,
+    formState: { isSubmitSuccessful },
+  } = useForm<FormType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       term: "",
@@ -169,9 +174,11 @@ export function LandingPageForm({ userId }: { userId: string }) {
             <>
               {jobDescriptions.length === 0 ? (
                 <>
-                  <section className="pt-2">
-                    <p className="text-center mb-3">No results found.</p>
-                  </section>
+                  {isSubmitSuccessful && (
+                    <section className="pt-2">
+                      <p className="text-center mb-3">No results found.</p>
+                    </section>
+                  )}
                   <section className="pt-2">
                     <p className="text-center">
                       Try searching for:{" "}
