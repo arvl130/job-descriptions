@@ -3,6 +3,7 @@ import Head from "next/head"
 import type { AppProps } from "next/app"
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import Link from "next/link"
 
 function Navbar() {
   const { status } = useSession()
@@ -11,7 +12,7 @@ function Navbar() {
     <nav className="h-16 border-b border-zinc-300 flex items-center px-6">
       <div className="max-w-6xl mx-auto w-full flex justify-between">
         <h1 className="flex items-center text-lg text-zinc-700 font-semibold">
-          Job Descriptions
+          <Link href="/">Job Descriptions</Link>
         </h1>
         <div>
           <button
