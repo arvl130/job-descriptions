@@ -7,12 +7,12 @@ export function SideNav() {
   return (
     <aside className="px-4 py-12 space-y-2">
       <Link
-        href="/search"
+        href="/getting-started"
         className={`block px-4 py-2 hover:bg-zinc-200 transition duration-200 rounded-md font-medium ${
-          router.pathname === "/search" ? "bg-zinc-100" : ""
+          router.pathname === "/getting-started" ? "bg-zinc-100" : ""
         }`}
       >
-        Search
+        Getting started
       </Link>
       <Link
         href="/api-keys"
@@ -21,6 +21,14 @@ export function SideNav() {
         }`}
       >
         API Keys
+      </Link>
+      <Link
+        href="/search"
+        className={`block px-4 py-2 hover:bg-zinc-200 transition duration-200 rounded-md font-medium ${
+          router.pathname === "/search" ? "bg-zinc-100" : ""
+        }`}
+      >
+        Online Search
       </Link>
     </aside>
   )
