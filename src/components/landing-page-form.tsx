@@ -54,17 +54,18 @@ export function LandingPageForm() {
           <input
             type="text"
             placeholder=" Type a job title ..."
-            className="w-full px-4 py-2 rounded-l-md border border-gray-300 transition duration-200 focus:outline-none focus:ring focus:ring-blue-300/40 focus:border-blue-500"
+            className="w-full px-4 py-2 rounded-l-md border border-gray-300 transition duration-100 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border-purple-600"
             {...register("term")}
           />
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-400 transition duration-200 text-white font-medium px-4 py-2 rounded-r-md focus:outline-none focus:ring focus:ring-blue-300/40"
+            className="bg-zinc-600 hover:bg-zinc-500 transition duration-100 text-white font-medium px-4 py-2 rounded-r-md focus:outline-none focus:ring focus:ring-purple-300/40"
           >
             Search
           </button>
         </div>
       </form>
+
       {isLoading ? (
         <div className="pt-2">
           <p className="text-center mb-3">Working on it ...</p>
@@ -102,7 +103,7 @@ export function LandingPageForm() {
                     href={url}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium px-2 py-1 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200  focus:outline-none focus:ring focus:ring-blue-300/40 focus:border focus:border-blue-500 focus:bg-gray-50"
+                    className="font-medium px-2 py-1 border border-gray-300 rounded-md hover:bg-gray-50 transition duration-100  focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 focus:border focus:border-purple-600 focus:bg-gray-50"
                   >
                     open
                   </a>
