@@ -7,6 +7,7 @@ import { EditKeyDialog } from "@/components/edit-key-dialog"
 import { SideNav } from "@/components/sidenav"
 import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
+import Head from "next/head"
 
 function ApiKeyItem({
   apiKey,
@@ -150,84 +151,95 @@ export default function ApiKeys() {
     return <div className="text-center px-6 py-12">Loading ...</div>
 
   return (
-    <div className="max-w-6xl mx-auto w-full grid grid-cols-[16rem_auto]">
-      <SideNav />
-      <main className="text-zinc-700 py-12 px-6 max-w-3xl mx-auto w-full">
-        <h2 className="text-2xl font-semibold mb-4">API Keys</h2>
-        <div className="max-w-xl mx-auto">
-          <header>
-            <input
-              type="text"
-              placeholder="Search keys ..."
-              className="bg-zinc-50 placeholder-zinc-400 w-full px-4 py-2 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 border border-zinc-300 rounded-t-md focus:border focus:border-purple-600 transition duration-100"
-              onChange={(e) => setSearchTerm(e.currentTarget.value)}
+    <>
+      <Head>
+        <title>API Keys &#x2013; Find Job Descriptions</title>
+        <meta
+          name="description"
+          content="Stop thinking about job descriptions and get them here."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className="max-w-6xl mx-auto w-full grid grid-cols-[16rem_auto]">
+        <SideNav />
+        <main className="text-zinc-700 py-12 px-6 max-w-3xl mx-auto w-full">
+          <h2 className="text-2xl font-semibold mb-4">API Keys</h2>
+          <div className="max-w-xl mx-auto">
+            <header>
+              <input
+                type="text"
+                placeholder="Search keys ..."
+                className="bg-zinc-50 placeholder-zinc-400 w-full px-4 py-2 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-500 border border-zinc-300 rounded-t-md focus:border focus:border-purple-600 transition duration-100"
+                onChange={(e) => setSearchTerm(e.currentTarget.value)}
+              />
+            </header>
+            {isLoading ? (
+              <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
+                Loading ...
+              </section>
+            ) : (
+              <>
+                {isError ? (
+                  <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
+                    An error occured while loading your API keys. :{"("}
+                  </section>
+                ) : (
+                  <>
+                    {apiKeys.length === 0 ? (
+                      <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
+                        <p className="mb-4 text-zinc-400">No keys found.</p>
+                        <button
+                          type="button"
+                          className="w-44 py-2 bg-zinc-700 hover:bg-zinc-600 transition duration-200 text-white font-medium rounded-md"
+                          onClick={() => setIsDialogOpen(true)}
+                        >
+                          Generate new key
+                        </button>
+                      </section>
+                    ) : (
+                      <section className="min-h-[20rem] border-x border-b border-zinc-300">
+                        {visibleApikeys(apiKeys).length === 0 ? (
+                          <p className="text-center pt-4 text-zinc-400">
+                            No matching keys.
+                          </p>
+                        ) : (
+                          <>
+                            {visibleApikeys(apiKeys).map((apiKey, index) => (
+                              <ApiKeyItem
+                                key={apiKey.keyId}
+                                apiKey={apiKey}
+                                index={index}
+                              />
+                            ))}
+                          </>
+                        )}
+
+                        {apiKeys.length < MAX_APIKEY_COUNT && (
+                          <article className="flex justify-center px-4 py-4">
+                            <button
+                              type="button"
+                              className="px-4 py-2 text-sm hover:bg-zinc-700 hover:text-white border border-zinc-700 transition duration-200 font-semibold rounded-md"
+                              onClick={() => setIsDialogOpen(true)}
+                            >
+                              New &#xFF0B;
+                            </button>
+                          </article>
+                        )}
+                      </section>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+
+            <GenerateKeyDialog
+              isOpen={isDialogOpen}
+              close={() => setIsDialogOpen(false)}
             />
-          </header>
-          {isLoading ? (
-            <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
-              Loading ...
-            </section>
-          ) : (
-            <>
-              {isError ? (
-                <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
-                  An error occured while loading your API keys. :{"("}
-                </section>
-              ) : (
-                <>
-                  {apiKeys.length === 0 ? (
-                    <section className="min-h-[20rem] border-x border-b border-zinc-300 flex flex-col justify-center items-center">
-                      <p className="mb-4 text-zinc-400">No keys found.</p>
-                      <button
-                        type="button"
-                        className="w-44 py-2 bg-zinc-700 hover:bg-zinc-600 transition duration-200 text-white font-medium rounded-md"
-                        onClick={() => setIsDialogOpen(true)}
-                      >
-                        Generate new key
-                      </button>
-                    </section>
-                  ) : (
-                    <section className="min-h-[20rem] border-x border-b border-zinc-300">
-                      {visibleApikeys(apiKeys).length === 0 ? (
-                        <p className="text-center pt-4 text-zinc-400">
-                          No matching keys.
-                        </p>
-                      ) : (
-                        <>
-                          {visibleApikeys(apiKeys).map((apiKey, index) => (
-                            <ApiKeyItem
-                              key={apiKey.keyId}
-                              apiKey={apiKey}
-                              index={index}
-                            />
-                          ))}
-                        </>
-                      )}
-
-                      {apiKeys.length < MAX_APIKEY_COUNT && (
-                        <article className="flex justify-center px-4 py-4">
-                          <button
-                            type="button"
-                            className="px-4 py-2 text-sm hover:bg-zinc-700 hover:text-white border border-zinc-700 transition duration-200 font-semibold rounded-md"
-                            onClick={() => setIsDialogOpen(true)}
-                          >
-                            New &#xFF0B;
-                          </button>
-                        </article>
-                      )}
-                    </section>
-                  )}
-                </>
-              )}
-            </>
-          )}
-
-          <GenerateKeyDialog
-            isOpen={isDialogOpen}
-            close={() => setIsDialogOpen(false)}
-          />
-        </div>
-      </main>
-    </div>
+          </div>
+        </main>
+      </div>
+    </>
   )
 }
