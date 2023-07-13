@@ -54,7 +54,7 @@ export default function Home() {
             <button
               type="button"
               className={`
-            w-32 py-2 text-center text-white rounded-md transition duration-200 font-semibold
+            w-28 py-2 text-center text-white rounded-md transition duration-200 font-semibold
             ${status === "loading" ? "bg-purple-300" : ""}
             ${
               status === "unauthenticated" || status === "authenticated"
@@ -70,12 +70,12 @@ export default function Home() {
                   })
               }}
             >
-              {status === "loading" ? <br /> : <>Get Started</>}
+              {status === "loading" ? <br /> : <>Try Now</>}
             </button>
 
             <Link
               href="/getting-started"
-              className="w-32 py-2 text-center font-semibold"
+              className="w-28 py-2 text-center font-semibold"
             >
               Learn more →
             </Link>
