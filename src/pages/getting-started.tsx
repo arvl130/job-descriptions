@@ -29,7 +29,7 @@ export default function GettingStarted() {
             You may use this service either through the online search provided
             in this website, or by integrating with our REST API.
           </p>
-          <p className="mb-2">
+          <p className="mb-4">
             To start using this service, you will need an API key.
           </p>
           <ol className="pl-10 list-decimal">
