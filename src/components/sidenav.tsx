@@ -12,7 +12,7 @@ export function SideNav() {
           router.pathname === "/getting-started" ? "bg-zinc-100" : ""
         }`}
       >
-        Getting started
+        Getting Started
       </Link>
       <Link
         href="/api-keys"
