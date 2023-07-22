@@ -60,6 +60,4 @@ $ pnpm build
 
 ## License
 
-This project is licensed under the MIT License.
-
-Copyright © 2023 Angelo Geulin
+This project is licensed under the MIT License. Copyright © 2023 Angelo Geulin
