@@ -8,7 +8,6 @@ Stop thinking about job descriptions and get them here. Try our [Online Search](
 
 ## Features
 
-- Responsive frontend
 - Online search
 - REST API support
 
