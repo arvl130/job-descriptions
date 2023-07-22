@@ -1,8 +1,8 @@
 #! /bin/sh -e 
 
+echo ">>> Creating DynamoDB table ..."
 aws dynamodb \
   --no-cli-pager \
-  --endpoint-url http://localhost:4566 \
   create-table \
   --table-name JobDescriptions \
   --attribute-definitions \
@@ -13,7 +13,7 @@ aws dynamodb \
   --key-schema \
     AttributeName=pk,KeyType=HASH \
     AttributeName=sk,KeyType=RANGE \
-  --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+  --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
   --global-secondary-indexes \
     "
       [
@@ -33,16 +33,28 @@ aws dynamodb \
             }
           ],
           \"ProvisionedThroughput\": {
-            \"ReadCapacityUnits\": 5,
-            \"WriteCapacityUnits\": 5
+            \"ReadCapacityUnits\": 1,
+            \"WriteCapacityUnits\": 1
           }
         }
       ]
     "
+
+echo ">>> Waiting for table to be active ..."
+while [ \
+  "$(aws dynamodb --no-cli-pager describe-table --table-name JobDescriptions \
+    | jq '.Table.TableStatus == "ACTIVE"')" \
+    != "true" \
+  ]
+do
+  sleep 3
+done
+echo ">>> Table created."
+
+echo ">>> Enabling TTL on DynamoDB table ..."
 aws dynamodb \
   --no-cli-pager \
-  --endpoint-url http://localhost:4566 \
   update-time-to-live \
   --table-name JobDescriptions \
   --time-to-live-specification Enabled=true,AttributeName=expires
-
+echo ">>> TTL enabled."
