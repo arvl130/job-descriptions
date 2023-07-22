@@ -1,10 +1,10 @@
-# 🔎 Job Descriptions Search API
+# 🔎 Find Job Descriptions
 
 ![Screenshot of project home page](https://raw.githubusercontent.com/arvl130/job-descriptions/master/preview-1.png)
 
 ![Screenshot of project search page](https://raw.githubusercontent.com/arvl130/job-descriptions/master/preview-2.png)
 
-Stop thinking about job descriptions and get them here.
+Stop thinking about job descriptions and get them here. Try our Online Search and REST API.
 
 ## Features
 
