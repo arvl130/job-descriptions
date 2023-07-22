@@ -6,13 +6,13 @@
 
 Stop thinking about job descriptions and get them here.
 
-# Features
+## Features
 
 - Responsive frontend
 - Online search
 - REST API support
 
-# Tech stack
+## Tech stack
 
 - [React](https://react.dev) and [Next.js](https://nextjs.org) for frontend and backend
 - [Tailwind CSS](tailwindcss.com) for styling
@@ -20,7 +20,7 @@ Stop thinking about job descriptions and get them here.
 - [PostgreSQL](https://www.postgresql.org) for job description search
 - [DynamoDB](https://aws.amazon.com/dynamodb) for API key management and validation
 
-# Setup
+## Setup
 
 This project uses the dataset provided by the O\*NET Resource Center for searching job descriptions.
 
