@@ -10,8 +10,9 @@ Stop thinking about job descriptions and get them here. Try our [Online Search](
 
 - Online search
 - REST API support
+- Multiple apps support with API Keys
 
-## Tech stack
+## Tech Stack
 
 - [React](https://react.dev) and [Next.js](https://nextjs.org) for frontend and backend
 - [Tailwind CSS](tailwindcss.com) for styling
