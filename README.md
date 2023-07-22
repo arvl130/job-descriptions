@@ -4,7 +4,7 @@
 
 ![Screenshot of project search page](https://raw.githubusercontent.com/arvl130/job-descriptions/master/preview-2.png)
 
-Stop thinking about job descriptions and get them here. Try our Online Search and REST API.
+Stop thinking about job descriptions and get them here. Try our [Online Search](https://jobdescriptions.ageulin.com) and [REST API](https://jobdescriptions.ageulin.com).
 
 ## Features
 
