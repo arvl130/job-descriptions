@@ -1,8 +1,24 @@
 # 🔎 Job Descriptions Search API
 
-![Screenshot of the website for this project](https://i.imgur.com/nnMwiGY.png)
+![Screenshot of project home page](https://raw.githubusercontent.com/arvl130/job-descriptions/master/preview-1.png)
+
+![Screenshot of project search page](https://raw.githubusercontent.com/arvl130/job-descriptions/master/preview-2.png)
 
 Stop thinking about job descriptions and get them here.
+
+# Features
+
+- Responsive frontend
+- Online search
+- REST API support
+
+# Tech stack
+
+- [React](https://react.dev) and [Next.js](https://nextjs.org) for frontend and backend
+- [Tailwind CSS](tailwindcss.com) for styling
+- [Next Auth](https://authjs.dev) for authentication
+- [PostgreSQL](https://www.postgresql.org) for job description search
+- [DynamoDB](https://aws.amazon.com/dynamodb) for API key management and validation
 
 # Setup
 
