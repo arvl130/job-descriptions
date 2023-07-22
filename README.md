@@ -10,7 +10,7 @@ Stop thinking about job descriptions and get them here. Try our [Online Search](
 
 - Online search
 - REST API support
-- Multiple apps support with API Keys
+- Multiple apps support with API keys
 
 ## Tech Stack
 
