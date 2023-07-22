@@ -7,7 +7,7 @@ export const serverEnv = createEnv({
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
     NEXTAUTH_SECRET: z.string().min(1),
-    NEXTAUTH_URL: z.string().min(1),
+    NEXTAUTH_URL: z.string().min(1).optional(),
     AWS_REGION: z.string().min(1),
     AWS_ACCESS_KEY_ID: z.string().min(1),
     AWS_ACCESS_KEY_SECRET: z.string().min(1),
